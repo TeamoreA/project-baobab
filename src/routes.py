@@ -1,3 +1,6 @@
+"""
+Main application routes go here
+"""
 from flask import Blueprint
 from src.controllers.domain_lookup_controller import domain_lookup
 

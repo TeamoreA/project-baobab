@@ -1,16 +1,18 @@
-from datetime import datetime
-from flasgger import Swagger
-from flask import request, jsonify, Response, Blueprint
-from prometheus_client import CollectorRegistry, Gauge, generate_latest, CONTENT_TYPE_LATEST
-from werkzeug.serving import WSGIRequestHandler
-from src import app, db
-from src.models.domain_lookup import DomainLookup
+"""
+Main API logic goes here
+"""
 import ipaddress
 import logging
 import os
 import socket
 import time
-import signal
+
+from datetime import datetime
+from flasgger import Swagger
+from flask import request, jsonify, Response, Blueprint
+from prometheus_client import CollectorRegistry, Gauge, generate_latest, CONTENT_TYPE_LATEST
+from src import app, db
+from src.models.domain_lookup import DomainLookup
 
 swagger = Swagger(app)
 
@@ -23,10 +25,13 @@ logger = logging.getLogger('access')
 
 @domain_lookup.before_request
 def log_request_info():
-    logger.info(f'[{request.method}] {request.url} - IP: {request.remote_addr}')
-    logger.info(f'Headers: {request.headers}')
+    """
+    Log basic client info before requests
+    """
+    logger.info('[%s] %s - IP: {request.remote_addr}', request.method, request.url)
+    logger.info('Headers: %s', request.headers)
     if request.method in ['POST', 'PUT', 'PATCH']:
-        logger.info(f'Body: {request.get_data()}')
+        logger.info('Body: %s', request.get_data())
 
 
 @domain_lookup.route('/', methods=['GET'])
@@ -42,7 +47,7 @@ def query_status():
     """
     current_time = int(time.time())
     version = "0.1.0"
-    
+
     kubernetes = os.getenv('KUBERNETES_SERVICE_HOST') is not None
 
     response = {
@@ -50,7 +55,7 @@ def query_status():
         "date": current_time,
         "kubernetes": kubernetes
     }
-    
+
     return jsonify(response)
 
 @domain_lookup.route('/health', methods=['GET'])
@@ -105,7 +110,7 @@ def lookup_domain():
         description: Not Found
     """
     domain = request.args.get('domain')
-    
+
     if not domain:
         return jsonify({"error": "Domain parameter is required"}), 400
 
@@ -131,7 +136,7 @@ def lookup_domain():
             "domain": domain,
             "ipv4_addresses": ipv4_addresses
         }
-        
+
         return jsonify(response)
     except socket.gaierror:
         return jsonify({"error": "Invalid domain or unable to resolve domain"}), 400
@@ -167,19 +172,25 @@ def validate_ipv4():
         "ip": ip,
         "valid_ipv4": is_valid
     }
-    
+
     return jsonify(response), 200
 
 # Define Prometheus metrics
 registry = CollectorRegistry()
 request_count = Gauge('flask_app_requests_total', 'Total number of requests', registry=registry)
-request_duration = Gauge('flask_app_request_duration_seconds', 'Duration of requests in seconds', registry=registry)
+request_duration = Gauge(
+    'flask_app_request_duration_seconds', 'Duration of requests in seconds', registry=registry)
 
 @domain_lookup.before_request
 def before_request():
-    request_count.inc()  # Increment the request count for each incoming request
+    """
+    Increment the request count for each incoming request
+    """
+    request_count.inc()
 
 @domain_lookup.route('/metrics')
 def metrics():
-    # Generate and return metrics in Prometheus format
+    """
+    Generate and return metrics in Prometheus format
+    """
     return Response(generate_latest(registry), mimetype=CONTENT_TYPE_LATEST)

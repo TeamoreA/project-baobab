@@ -1,8 +1,11 @@
-from flask import Flask
+"""
+Declare main app settings
+"""
 import os
 from dotenv import load_dotenv
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 # loading environment variables
 load_dotenv()
@@ -22,6 +25,5 @@ migrate = Migrate(app, db)
 # import api blueprint to register it with app
 from src.routes import api
 app.register_blueprint(api)
-
 # import models to let the migrate tool know
 from src.models.domain_lookup import DomainLookup
