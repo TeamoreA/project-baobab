@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+      "secrets": {
+        "type": "object",
+        "properties": {
+          "SQLALCHEMY_DATABASE_URI": {
+            "type": "string",
+            "description": "The Postgres database URL"
+          }
+        },
+        "required": ["SQLALCHEMY_DATABASE_URI"]
+      },
+      "GHCR_auth_json": {
+        "type": "string",
+        "description": " GitHub Container Registry auth json"
+      }
+    },
+    "required": ["secrets", "GHCR_auth_json"]
+  }
+  

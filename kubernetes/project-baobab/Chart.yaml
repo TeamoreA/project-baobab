@@ -2,8 +2,8 @@ apiVersion: v2
 version: 0.1.0
 description: A Helm chart for project-baobab
 name: project-baobab
-appVersion: "0.16.1"
+appVersion: "0.16.0"
 dependencies:
   - name: project-baobab
-    version: 0.1.0
+    version: 0.1.2
     repository: https://teamorea.github.io/project-baobab/
