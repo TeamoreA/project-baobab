@@ -11,8 +11,6 @@ image:
   tag: "latest"
 
 env:
-  - name: SQLALCHEMY_TRACK_MODIFICATIONS
-    value: 'False'
   - name: PORT
     value: '3000'
   - name: SQLALCHEMY_DATABASE_URI
@@ -59,8 +57,3 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
-
-secrets:
-  SQLALCHEMY_DATABASE_URI:  # enter database URL here
-
-GHCR_auth_json: '{"auths":{"ghcr.io":{"auth":"username:token | base64"}}}' # this should be in the format '{"auths":{"ghcr.io":{"auth":"username:token | base64"}}}'
