@@ -11,4 +11,15 @@ entries:
     urls:
     - https://github.com/TeamoreA/project-baobab/releases/download/leyline-api-0.1.0/leyline-api-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-30T10:33:32.223255642Z"
+  project-baobab:
+  - apiVersion: v2
+    appVersion: 1.16.1
+    created: "2024-08-30T10:55:56.005180954Z"
+    description: A Helm chart for project-baobab
+    digest: bbdaecc53ceda19f19c9ca4795eecbe808bf31a21939fdaf5d7e54f3f86732d8
+    name: project-baobab
+    type: application
+    urls:
+    - https://github.com/TeamoreA/project-baobab/releases/download/project-baobab-0.1.0/project-baobab-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-08-30T10:55:56.005206482Z"
