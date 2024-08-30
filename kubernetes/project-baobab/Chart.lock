@@ -1,6 +1,6 @@
 dependencies:
-- name: leyline-api
+- name: project-baobab
   repository: https://teamorea.github.io/project-baobab/
   version: 0.1.0
-digest: sha256:a67dc2550503aaa036255e00b3b233ebb67472added44dec48af98f489542471
-generated: "2024-08-30T13:50:00.011666+03:00"
+digest: sha256:73339db6e09546662e56eb1db5dd3428b6db74249d1d1036bcf47d8692b62b50
+generated: "2024-08-30T14:11:31.09253+03:00"
