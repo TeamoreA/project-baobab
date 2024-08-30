@@ -1,3 +1,4 @@
-image:
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+project-baobab:
+  image:
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
