@@ -8,7 +8,7 @@ image:
   repository: ghcr.io/teamorea/leyline-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.0.3"
+  tag: "26bbea17257d983d5d80104824c67d485076725b"
 
 env:
   - name: SQLALCHEMY_TRACK_MODIFICATIONS
