@@ -26,16 +26,6 @@ jobs:
           --tag ghcr.io/teamorea/leyline-api:latest \
           --push .
 
-    # - name: Package Helm chart
-    #   run: |
-    #     cd kubernetes/leyline-api/
-    #     helm package .
-
-    # - name: Upload Helm chart as artifact
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: helm-chart
-    #     path: kubernetes/leyline-api/*.tgz
   publish:
     permissions:
       contents: write # to push chart release and create a release (helm/chart-releaser-action)
