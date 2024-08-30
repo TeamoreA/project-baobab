@@ -14,6 +14,16 @@ entries:
   project-baobab:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-08-30T16:25:15.194455017Z"
+    description: A Helm chart for project-baobab
+    digest: 3042febd20eed610a5413ac487265751cf2817a2dfbecfb8d6c7c4e4dba941c2
+    name: project-baobab
+    type: application
+    urls:
+    - https://github.com/TeamoreA/project-baobab/releases/download/project-baobab-0.1.2/project-baobab-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-08-30T16:12:51.27689355Z"
     description: A Helm chart for project-baobab
     digest: 6af7596993be2ab3d585cd4af0489bd1c42c72c35f2773cf5af74ac04d8a727c
@@ -32,4 +42,4 @@ entries:
     urls:
     - https://github.com/TeamoreA/project-baobab/releases/download/project-baobab-0.1.0/project-baobab-0.1.0.tgz
     version: 0.1.0
-generated: "2024-08-30T16:12:51.276906194Z"
+generated: "2024-08-30T16:25:15.194473362Z"
