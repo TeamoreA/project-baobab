@@ -8,7 +8,7 @@ image:
   repository: ghcr.io/teamorea/leyline-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "26bbea17257d983d5d80104824c67d485076725b"
+  tag: ""
 
 env:
   - name: SQLALCHEMY_TRACK_MODIFICATIONS
@@ -60,3 +60,7 @@ autoscaling:
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
 
+secrets:
+  SQLALCHEMY_DATABASE_URI: '' # enter database URL here
+
+GHCR_auth_json: "" # this should be in the format '{"auths":{"ghcr.io":{"auth":"username:token | base64"}}}'
