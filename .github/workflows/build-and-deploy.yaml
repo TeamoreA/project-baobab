@@ -37,11 +37,27 @@ jobs:
     #     name: helm-chart
     #     path: kubernetes/leyline-api/*.tgz
   publish:
+    permissions:
+      contents: write # to push chart release and create a release (helm/chart-releaser-action)
+
     runs-on: ubuntu-latest
     needs: build
-
     steps:
-    - name: Run chart-releaser job
-      uses: helm/chart-releaser-action@v1.4.0
-      env:
-        CR_TOKEN: "${{ secrets.GHCR_TOKEN }}"
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0      
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"  
+      - name: Set up Helm
+        uses: azure/setup-helm@v3.5
+        with:
+          version: v3.9.2
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.5.0
+        env:
+          CR_TOKEN: "${{ secrets.GHCR_TOKEN }}"
