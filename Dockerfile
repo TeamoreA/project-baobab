@@ -11,7 +11,9 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code to the container
-COPY . .
+COPY src ./src
+COPY migrations ./migrations
+COPY app.py app.py
 
 # Command to run the Flask application
 CMD ["flask", "run", "--host=0.0.0.0"]
