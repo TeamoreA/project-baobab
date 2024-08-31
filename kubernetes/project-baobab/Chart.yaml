@@ -6,4 +6,4 @@ appVersion: "0.16.0"
 dependencies:
   - name: project-baobab
     version: 0.1.6
-    repository: oci://ghcr.io/teamorea/project-baobab
+    repository: https://teamorea.github.io/project-baobab/
