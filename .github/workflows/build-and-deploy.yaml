@@ -3,7 +3,7 @@ name: Build Docker Image and Create Helm Package
 on:
   push:
     branches:
-      - main
+    - main
 
 jobs:
   build:
@@ -35,8 +35,8 @@ jobs:
     - name: Build Docker image
       run: |
         docker buildx build --platform linux/amd64,linux/arm64 \
-          --tag ghcr.io/teamorea/leyline-api:${{ github.sha }} \
-          --tag ghcr.io/teamorea/leyline-api:latest \
+          --tag ghcr.io/teamorea/project-baobab:${{ github.sha }} \
+          --tag ghcr.io/teamorea/project-baobab:latest \
           --push .
 
   publish:
@@ -46,21 +46,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0      
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"  
-      - name: Set up Helm
-        uses: azure/setup-helm@v4.2.0
-        with:
-          version: v3.13.3
+    - name: Configure Git
+      run: "git config user.name \"$GITHUB_ACTOR\"\ngit config user.email \"$GITHUB_ACTOR@users.noreply.github.com\"  \n"
+    - name: Set up Helm
+      uses: azure/setup-helm@v4.2.0
+      with:
+        version: v3.13.3
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.5.0
-        env:
-          CR_TOKEN: "${{ secrets.GHCR_TOKEN }}"
+    - name: Run chart-releaser
+      uses: helm/chart-releaser-action@v1.5.0
+      env:
+        CR_TOKEN: "${{ secrets.GHCR_TOKEN }}"

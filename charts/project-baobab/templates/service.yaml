@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "leyline-api.fullname" . }}
+  name: {{ include "project-baobab.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "leyline-api.labels" . | nindent 4 }}
+    {{- include "project-baobab.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -13,4 +13,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "leyline-api.selectorLabels" . | nindent 4 }}
+    {{- include "project-baobab.selectorLabels" . | nindent 4 }}

@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "leyline-api.fullname" . }}
+  name: {{ include "project-baobab.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "leyline-api.labels" . | nindent 4 }}
+    {{- include "project-baobab.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "leyline-api.selectorLabels" . | nindent 6 }}
+      {{- include "project-baobab.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "leyline-api.selectorLabels" . | nindent 8 }}
+        {{- include "project-baobab.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

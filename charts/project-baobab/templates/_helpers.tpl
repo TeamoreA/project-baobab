@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "leyline-api.name" -}}
+{{- define "project-baobab.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "leyline-api.fullname" -}}
+{{- define "project-baobab.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "leyline-api.chart" -}}
+{{- define "project-baobab.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "leyline-api.labels" -}}
-helm.sh/chart: {{ include "leyline-api.chart" . }}
-{{ include "leyline-api.selectorLabels" . }}
+{{- define "project-baobab.labels" -}}
+helm.sh/chart: {{ include "project-baobab.chart" . }}
+{{ include "project-baobab.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "leyline-api.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "leyline-api.name" . }}
+{{- define "project-baobab.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "project-baobab.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "leyline-api.serviceAccountName" -}}
+{{- define "project-baobab.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "leyline-api.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "project-baobab.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
