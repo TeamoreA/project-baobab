@@ -1,6 +1,6 @@
 dependencies:
 - name: project-baobab
   repository: https://teamorea.github.io/project-baobab/
-  version: 0.1.7
-digest: sha256:ba5e74ed2e68cef0c70dc469f4ca92fbec24ecb36a106c58bee012724c28a69c
-generated: "2024-08-31T09:46:21.532813+03:00"
+  version: 0.1.8
+digest: sha256:29f15b3af9310ecf6439792d1c70aa905d1cb104cbc81d088b8a7338a6de0fb0
+generated: "2024-08-31T10:03:10.671258+03:00"

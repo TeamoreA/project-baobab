@@ -11,8 +11,6 @@ image:
   tag: ""
 
 env:
-- name: SQLALCHEMY_TRACK_MODIFICATIONS
-  value: 'False'
 - name: PORT
   value: '3000'
 - name: SQLALCHEMY_DATABASE_URI

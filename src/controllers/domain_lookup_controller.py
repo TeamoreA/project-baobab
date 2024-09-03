@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 from flasgger import Swagger
 from flask import request, jsonify, Response, Blueprint
-from prometheus_client import CollectorRegistry, Gauge, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import CollectorRegistry, Gauge, generate_latest, CONTENT_TYPE_LATEST, Counter, Histogram
 from src import app, db
 from src.models.domain_lookup import DomainLookup
 
@@ -87,7 +87,7 @@ def queries_history():
     history = DomainLookup.query.order_by(DomainLookup.lookup_date.desc()).limit(20).all()
 
     if not history:
-        return jsonify({"message": "No history found"}), 404
+        return jsonify({"message": "No history found"})
 
     response = []
     response = [entry.to_dict() for entry in history]
@@ -176,21 +176,21 @@ def validate_ipv4():
     return jsonify(response), 200
 
 # Define Prometheus metrics
-registry = CollectorRegistry()
-request_count = Gauge('flask_app_requests_total', 'Total number of requests', registry=registry)
-request_duration = Gauge(
-    'flask_app_request_duration_seconds', 'Duration of requests in seconds', registry=registry)
+REQUEST_COUNT = Counter('api_requests_total', 'Total API requests')
+REQUEST_LATENCY = Histogram('api_request_latency_seconds', 'API request latency')
 
 @domain_lookup.before_request
+@REQUEST_LATENCY.time()
 def before_request():
     """
     Increment the request count for each incoming request
     """
-    request_count.inc()
+    
+    REQUEST_COUNT.inc()
 
 @domain_lookup.route('/metrics')
 def metrics():
     """
     Generate and return metrics in Prometheus format
     """
-    return Response(generate_latest(registry), mimetype=CONTENT_TYPE_LATEST)
+    return generate_latest()
