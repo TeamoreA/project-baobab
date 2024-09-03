@@ -5,9 +5,17 @@ on:
     branches:
     - main
 
+env:
+  INFRA_REPO_BRANCH: main
+  GITHUB_CI_USER: GHA
+  GITHUB_CI_MAIL: gha-app@vidalytics.com
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
     - name: Checkout code

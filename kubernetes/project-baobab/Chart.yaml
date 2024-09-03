@@ -5,5 +5,5 @@ name: project-baobab
 appVersion: "0.16.0"
 dependencies:
   - name: project-baobab
-    version: 0.1.8
+    version: 0.1.9
     repository: https://teamorea.github.io/project-baobab/
