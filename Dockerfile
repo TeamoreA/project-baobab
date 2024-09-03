@@ -16,4 +16,4 @@ COPY migrations ./migrations
 COPY app.py app.py
 
 # Command to run the Flask application
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:3000", "app:app"]

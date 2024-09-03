@@ -1,7 +1,10 @@
 """
 Application's database models
 """
+import ast
 from datetime import datetime
+from flask import request
+import time
 
 from src import db
 
@@ -24,8 +27,11 @@ class DomainLookup(db.Model):  # pylint: disable=too-few-public-methods
         """
         Help to deserialize model data
         """
+        addresses_list = ast.literal_eval(self.ipv4_addresses)
         return {
+            "queryID": self.id,
             "domain": self.domain,
-            "ipv4_addresses": self.ipv4_addresses,
-            "lookup_date": self.lookup_date.isoformat()
+            "addresses": [{"ip": ip, "queryID": self.id} for ip in addresses_list],
+            "created_time": int(time.mktime(self.lookup_date.timetuple())),
+            "client_ip": request.remote_addr
         }

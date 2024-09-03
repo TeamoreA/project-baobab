@@ -9,15 +9,108 @@ import time
 
 from datetime import datetime
 from flasgger import Swagger
-from flask import request, jsonify, Response, Blueprint
-from prometheus_client import CollectorRegistry, Gauge, generate_latest, CONTENT_TYPE_LATEST, Counter, Histogram
+from flask import request, jsonify, Blueprint
+from prometheus_client import generate_latest, Counter, Histogram
 from src import app, db
 from src.models.domain_lookup import DomainLookup
 
-swagger = Swagger(app)
+API_VERSION = "0.1.0"
+
+swagger_config = {
+    "swagger": "2.0",
+    "info": {
+        "title": "Project Baobab API",
+        "description": "This is an API to discover domains.",
+        "version": API_VERSION,
+    },
+    "basePath": "/",
+    "definitions": {
+        "handlers.HealthStatus": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.Status": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "integer"
+                },
+                "kubernetes": {
+                    "type": "boolean"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.ValidateIPRequest": {
+            "type": "object",
+            "properties": {
+                "ip": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.ValidateIPResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.Address": {
+            "type": "object",
+            "properties": {
+                "ip": {
+                    "type": "string"
+                },
+                "queryID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Query": {
+            "type": "object",
+            "properties": {
+                "addresses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Address"
+                    }
+                },
+                "client_ip": {
+                    "type": "string"
+                },
+                "created_time": {
+                    "type": "integer"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "queryID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "utils.HTTPError": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
+
+swagger = Swagger(app, template=swagger_config)
 
 domain_lookup = Blueprint("domain_lookup", __name__)
-
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -37,21 +130,22 @@ def log_request_info():
 @domain_lookup.route('/', methods=['GET'])
 def query_status():
     """
-    Show current status of the app
+    Show current status
     ---
     tags:
       - status
     responses:
       200:
         description: OK
+        schema:
+          $ref: '#/definitions/handlers.Status'
     """
     current_time = int(time.time())
-    version = "0.1.0"
 
     kubernetes = os.getenv('KUBERNETES_SERVICE_HOST') is not None
 
     response = {
-        "version": version,
+        "version": API_VERSION,
         "date": current_time,
         "kubernetes": kubernetes
     }
@@ -61,33 +155,39 @@ def query_status():
 @domain_lookup.route('/health', methods=['GET'])
 def query_health():
     """
-    Query health status of the app
+    Show health status
     ---
     tags:
       - health
     responses:
       200:
         description: OK
+        schema:
+          $ref: '#/definitions/handlers.HealthStatus'
     """
     return jsonify({"status": "healthy"})
 
 @domain_lookup.route('/v1/history', methods=['GET'])
 def queries_history():
     """
-    List latest discovered domains
+    List queries
     ---
     tags:
       - history
     responses:
       200:
         description: OK
+        schema:
+          $ref: '#/definitions/models.Query'
       400:
         description: Bad Request
+        schema:
+          $ref: '#/definitions/utils.HTTPError'
     """
     history = DomainLookup.query.order_by(DomainLookup.lookup_date.desc()).limit(20).all()
 
     if not history:
-        return jsonify({"message": "No history found"})
+        return jsonify({"message": "No history found"}), 400
 
     response = []
     response = [entry.to_dict() for entry in history]
@@ -101,18 +201,31 @@ def lookup_domain():
     ---
     tags:
       - tools
+    parameters:
+      - "type": "string"
+        "description": "Domain name"
+        "name": "domain"
+        "in": "query"
+        "required": true
+
     responses:
       200:
         description: OK
+        schema:
+          $ref: '#/definitions/models.Query'
       400:
         description: Bad Request
+        schema:
+          $ref: '#/definitions/utils.HTTPError'
       404:
         description: Not Found
+        schema:
+          $ref: '#/definitions/utils.HTTPError'
     """
     domain = request.args.get('domain')
 
     if not domain:
-        return jsonify({"error": "Domain parameter is required"}), 400
+        return jsonify({"message": "Domain parameter is required"}), 400
 
     try:
         # Resolve IPv4 addresses
@@ -131,15 +244,11 @@ def lookup_domain():
             db.session.add(lookup_entry)
 
         db.session.commit()
+        response = DomainLookup.query.filter_by(domain=domain).first()
 
-        response = {
-            "domain": domain,
-            "ipv4_addresses": ipv4_addresses
-        }
-
-        return jsonify(response)
+        return jsonify(response.to_dict())
     except socket.gaierror:
-        return jsonify({"error": "Invalid domain or unable to resolve domain"}), 400
+        return jsonify({"message": "Invalid domain or unable to resolve domain"}), 404
 
 
 @domain_lookup.route('/v1/tools/validate', methods=['POST'])
@@ -149,15 +258,25 @@ def validate_ipv4():
     ---
     tags:
       - tools
+    parameters:
+      - name: request
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ValidateIPRequest'
     responses:
       200:
         description: OK
+        schema:
+          $ref: '#/definitions/handlers.ValidateIPResponse'
       400:
         description: Bad Request
+        schema:
+          $ref: '#/definitions/utils.HTTPError'
     """
     data = request.json
     if not data or 'ip' not in data:
-        return jsonify({"error": "IP parameter is required"}), 400
+        return jsonify({"message": "IP parameter is required"}), 400
 
     ip = data['ip']
 
@@ -169,8 +288,7 @@ def validate_ipv4():
         is_valid = False
 
     response = {
-        "ip": ip,
-        "valid_ipv4": is_valid
+        "status": is_valid
     }
 
     return jsonify(response), 200
@@ -185,7 +303,7 @@ def before_request():
     """
     Increment the request count for each incoming request
     """
-    
+
     REQUEST_COUNT.inc()
 
 @domain_lookup.route('/metrics')
