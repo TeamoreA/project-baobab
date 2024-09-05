@@ -226,7 +226,7 @@ def lookup_domain():
 
     if not domain:
         return jsonify({"message": "Domain parameter is required"}), 400
-
+    domain = domain.lower()
     try:
         # Resolve IPv4 addresses
         ipv4_addresses = [ip[4][0] for ip in socket.getaddrinfo(domain, None, socket.AF_INET)]
@@ -310,5 +310,11 @@ def before_request():
 def metrics():
     """
     Generate and return metrics in Prometheus format
+    ---
+    tags:
+      - monitoring
+    responses:
+      200:
+        description: OK
     """
     return generate_latest()

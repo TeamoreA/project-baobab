@@ -1,5 +1,5 @@
 ## Domain Lookup API
-This is an api that helps discover domains. The full api can be found at https://<my domain here>/apidocs
+This is an API that helps discover domains. The full Swagger API documentation can be found at `https://<my domain here>/apidocs`
 
 ### Running the app locally
 - Copy the contents of `.env.example` file to `.env` file and ensure you replace all placeholders accordingly.
@@ -7,8 +7,8 @@ This is an api that helps discover domains. The full api can be found at https:/
 - Visit `http://localhost:3000/apidocs/` on your browser to discover all endpoints.
 
 ### Deployment to Kubernetes
-This app has been deployed to Kubernetes using a helm chart. Building docker image and packaging the helm chart is automatically done by GitHub actions found at `.github/workflows/build-and-deploy.yaml`.
+This app has been deployed to Kubernetes using a helm chart. Building the docker image and packaging the helm chart is automatically done on commit to the `main` branch by GitHub Actions found at `.github/workflows/build-and-deploy.yaml`.
 
-The compiled helm chart is found at `charts/project-baobab`.The helm chart compiled above is now deployed at `kubernetes/project-baobab`.
+The compiled helm chart is found at `charts/project-baobab` and an example of deploying this Helm chart can be found here `kubernetes/project-baobab`.
 
-_Please find detailed steps and deploying the helm chart here `charts/project-baobab/README.md`_
+_Please find detailed steps on deploying the helm chart here `charts/project-baobab/README.md`_

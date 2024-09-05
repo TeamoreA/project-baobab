@@ -1,7 +1,7 @@
 project-baobab:
   image:
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
+    tag: "e68ef67ea95e589a127aa14de8c5239e0b507660"
   ingress:
     enabled: true
     hosts:
